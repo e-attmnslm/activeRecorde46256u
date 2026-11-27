@@ -10,31 +10,28 @@ public class DBConnection {
     private static String portNumber = "3306";
     private static String dbName = "testpersonne";
 
-    private static DBConnection instance;
-    private Connection connexion;
+    private static Connection instance;
 
     private DBConnection() throws SQLException {
         Properties connectionProps = new Properties();
         connectionProps.put("user", userName);
         connectionProps.put("password", password);
         String urlDB = "jdbc:mysql://" + serverName + ":" + portNumber + "/" + dbName;
-        connexion = DriverManager.getConnection(urlDB, connectionProps);
+        instance = DriverManager.getConnection(urlDB, connectionProps);
     }
 
     public static synchronized Connection getConnection() throws SQLException {
-        if (instance == null || instance.connexion.isClosed()) {
-            instance = new DBConnection();
+        if (instance == null) {
+             new DBConnection();
         }
-        return instance.connexion;
+        return instance;
     }
 
     public static synchronized void setNomDB(String nomDB) throws SQLException {
-        if (!nomDB.equals(dbName)) {
-            dbName = nomDB;
-            if (instance != null && !instance.connexion.isClosed()) {
-                instance.connexion.close();
-            }
-            instance = new DBConnection();
+        if (nomDB!=null && nomDB!=dbName){
+            dbName=nomDB;
+            instance=null;
+
         }
     }
 }

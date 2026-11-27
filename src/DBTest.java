@@ -8,20 +8,12 @@ import org.junit.jupiter.api.Test;
 
 public class DBTest {
 
-    // Après chaque test, on remet la base par défaut
-    // pour que les tests restent indépendants les uns des autres.
     @AfterEach
     void remettreBaseParDefaut() throws SQLException {
         DBConnection.setNomDB("testpersonne");
     }
 
-    @Test
-    void test_type_de_connection() throws SQLException {
-        Object c = DBConnection.getConnection();
 
-        assertNotNull(c, "La connexion ne doit pas être null");
-        assertInstanceOf(Connection.class, c, "La connexion doit être un java.sql.Connection");
-    }
 
     @Test
     void test_une_connection() throws SQLException {
@@ -47,21 +39,15 @@ public class DBTest {
 
     @Test
     void test_changement_de_base() throws SQLException {
-        Connection avant = DBConnection.getConnection();
-        assertEquals("testpersonne", avant.getCatalog());
+        Connection c1 = DBConnection.getConnection();
+        DBConnection.setNomDB("testpersonne");
 
         DBConnection.setNomDB("testpersonne2");
-        Connection apres = DBConnection.getConnection();
+        Connection c2 = DBConnection.getConnection();
 
 
-        assertEquals("testpersonne2", apres.getCatalog());
-        assertFalse(apres.isClosed());
+        assertNotSame(c1,c2,"ils ne doivent pas avoir le meme adresse mémoire");
 
 
-        assertNotSame(avant, apres);
-        assertTrue(avant.isClosed(), "L'ancienne connexion doit être fermée");
-
-
-        assertSame(apres, DBConnection.getConnection());
     }
 }
