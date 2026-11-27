@@ -10,8 +10,8 @@ public class DBConnection {
     private static String portNumber = "3306";
     private static String dbName = "testpersonne";
 
-    private static DBConnection instance;   // l'instance unique du singleton
-    private Connection connexion;           // la connexion qu'il gère
+    private static DBConnection instance;
+    private Connection connexion;
 
     private DBConnection() throws SQLException {
         Properties connectionProps = new Properties();
@@ -34,7 +34,7 @@ public class DBConnection {
             if (instance != null && !instance.connexion.isClosed()) {
                 instance.connexion.close();
             }
-            instance = new DBConnection();   // on réutilise le constructeur
+            instance = new DBConnection();
         }
     }
 }
